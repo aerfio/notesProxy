@@ -18,7 +18,7 @@ app.use(cors());
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get('/getNotes', (req, res) => {
 	const db = mongoose.connection;
@@ -43,17 +43,16 @@ app.post('/addNote', function(req, res) {
 		if (err) {
 			return console.error(err);
 		}
-		console.log(note);
+		console.log(`Created note with _id: ${note._id}, and text: ${note.text}`);
 	});
 	res.set('Content-Type', 'text/plain');
-	res.send(`You sent: ${body.text} to Express`);
+	res.send(`You created: "${body.text}" note`);
 });
-app.post('/deleteNote', function(req, res) {
-	console.log(req.body._id);
+app.delete('/deleteNote', function(req, res) {
 	Note.findByIdAndDelete(req.body._id, err => {});
 	res.set('Content-Type', 'text/plain');
 	console.log(`Deleted note ${req.body._id}`);
 	res.send(`Deleted note ${req.body._id}`);
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Listening on port ${port}!`));
